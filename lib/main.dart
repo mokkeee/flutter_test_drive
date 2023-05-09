@@ -177,32 +177,27 @@ class BigCard extends StatelessWidget {
 class FavoritesPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final messages = ['Hello', 'Ahoj', 'こんにちわ'];
-    final theme = Theme.of(context);
-    final style = theme.textTheme.displaySmall!
-        .copyWith(color: theme.colorScheme.onPrimary);
-    final secondStyle = theme.textTheme.displaySmall!
-        .copyWith(color: theme.colorScheme.onSecondary);
+    var appState = context.watch<MyAppState>();
 
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Card(
-            color: theme.colorScheme.secondary,
-            child: ListTile(
-              title: Text(
-                'Messages',
-                style: style,
-              ),
-              subtitle: Text(messages.toList().join("¥n"),
-                  style: secondStyle),
-              leading: Icon(Icons.account_circle),
-              tileColor: theme.primaryColor,
-            ),
-          ),
-        ],
-      ),
+    if (appState.favorites.isEmpty) {
+      return Center(
+        child: Text('No favorites yet.'),
+      );
+    }
+
+    return ListView(
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(20),
+          child: Text('You have '
+              '${appState.favorites.length} favorites:'),
+        ),
+        for (var f in appState.favorites)
+          ListTile(
+            leading: Icon(Icons.favorite),
+            title: Text(f.asPascalCase),
+          )
+      ],
     );
   }
 }
