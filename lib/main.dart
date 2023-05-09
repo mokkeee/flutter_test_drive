@@ -57,53 +57,46 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     Widget page;
-    switch ( selectedIndex ){
+    switch (selectedIndex) {
       case 0:
         page = GeneratorPage();
         break;
       case 1:
-        page = Placeholder();
+        page = FavoritesPage();
         break;
       default:
         throw UnimplementedError('no widget for $selectedIndex');
     }
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        return Scaffold(
-          body: Row(
-            children: [
-              SafeArea(
-                child: NavigationRail(
-                  extended: constraints.maxWidth >= 600,
-                  destinations: [
-                    NavigationRailDestination(
-                        icon: Icon(Icons.home),
-                        label: Text('Home')),
-                    NavigationRailDestination(
-                        icon: Icon(Icons.favorite),
-                        label: Text('Favorites')),
-                  ],
-                  selectedIndex: selectedIndex,
-                  onDestinationSelected: (value) {
-                    setState(() {
-                      selectedIndex = value;
-                    });
-                  },
-                ),
+    return LayoutBuilder(builder: (context, constraints) {
+      return Scaffold(
+        body: Row(
+          children: [
+            SafeArea(
+              child: NavigationRail(
+                extended: constraints.maxWidth >= 600,
+                destinations: [
+                  NavigationRailDestination(
+                      icon: Icon(Icons.home), label: Text('Home')),
+                  NavigationRailDestination(
+                      icon: Icon(Icons.favorite), label: Text('Favorites')),
+                ],
+                selectedIndex: selectedIndex,
+                onDestinationSelected: (value) {
+                  setState(() {
+                    selectedIndex = value;
+                  });
+                },
               ),
-              Expanded(
-                  child: Container(
-                    color: Theme
-                        .of(context)
-                        .colorScheme
-                        .primaryContainer,
-                    child: page,
-                  ))
-            ],
-          ),
-        );
-      }
-    );
+            ),
+            Expanded(
+                child: Container(
+              color: Theme.of(context).colorScheme.primaryContainer,
+              child: page,
+            ))
+          ],
+        ),
+      );
+    });
   }
 }
 
@@ -113,32 +106,36 @@ class GeneratorPage extends StatelessWidget {
     var appState = context.watch<MyAppState>();
     var pair = appState.current;
 
-    IconData icon =
-    appState.favorites.contains(pair) ?
-    Icons.favorite : Icons.favorite_border;
+    IconData icon = appState.favorites.contains(pair)
+        ? Icons.favorite
+        : Icons.favorite_border;
 
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           BigCard(pair: pair),
-          SizedBox(height: 10,),
+          SizedBox(
+            height: 10,
+          ),
           Row(
             mainAxisSize: MainAxisSize.min,
             children: [
               ElevatedButton.icon(
-                  onPressed: () {
-                    appState.toggleFavorite();
-                  },
-                  icon: Icon(icon),
-                  label: Text('Like'),
+                onPressed: () {
+                  appState.toggleFavorite();
+                },
+                icon: Icon(icon),
+                label: Text('Like'),
               ),
-              SizedBox(width: 10,),
+              SizedBox(
+                width: 10,
+              ),
               ElevatedButton(
-                  onPressed: () {
-                    appState.getNext();
-                  },
-                  child: Text('Next'),
+                onPressed: () {
+                  appState.getNext();
+                },
+                child: Text('Next'),
               ),
             ],
           )
@@ -165,7 +162,6 @@ class BigCard extends StatelessWidget {
 
     return Card(
       color: theme.colorScheme.primary,
-
       child: Padding(
         padding: const EdgeInsets.all(20),
         child: Text(
@@ -173,6 +169,39 @@ class BigCard extends StatelessWidget {
           style: style,
           semanticsLabel: "${pair.first} ${pair.second}",
         ),
+      ),
+    );
+  }
+}
+
+class FavoritesPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final messages = ['Hello', 'Ahoj', 'こんにちわ'];
+    final theme = Theme.of(context);
+    final style = theme.textTheme.displaySmall!
+        .copyWith(color: theme.colorScheme.onPrimary);
+    final secondStyle = theme.textTheme.displaySmall!
+        .copyWith(color: theme.colorScheme.onSecondary);
+
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Card(
+            color: theme.colorScheme.secondary,
+            child: ListTile(
+              title: Text(
+                'Messages',
+                style: style,
+              ),
+              subtitle: Text(messages.toList().join("¥n"),
+                  style: secondStyle),
+              leading: Icon(Icons.account_circle),
+              tileColor: theme.primaryColor,
+            ),
+          ),
+        ],
       ),
     );
   }
